@@ -1,4 +1,4 @@
-import { JENKINS_REPO_PATH } from "../jenkins/configs.js"
+import { JENKINS_REPO_PATH, QA_MAP_DEPLOY } from "../jenkins/configs.js"
 import { modifyEnvRepoYmlConfig } from "../jenkins/git.js"
 import { createJenkins } from "../jenkins/util.js"
 
@@ -39,7 +39,8 @@ async function multiEnvironmentBuild(jobItem,compileEnv){
   console.log("\n开始准备在deploy进行构建生成docker版本号...\n")
   const deploy = JENKINS_REPO_PATH.deploy
   const jenkins = createJenkins(deploy)
-  const consoleLog = await jenkins.buildJenkinsJob(jobItem.name.replace("qa-","deploy-"))
+  let deployName = QA_MAP_DEPLOY[jobItem.name] ? QA_MAP_DEPLOY[jobItem.name] : jobItem.name.replace("qa-","deploy-")
+  const consoleLog = await jenkins.buildJenkinsJob(deployName)
   const dockerImgVersion =  jenkins.getDockerImageVersion(consoleLog)
   if(!dockerImgVersion) return console.log("❌ deploying docker image failed")
   console.log(`\n✅ dockerImgVersion: ${dockerImgVersion}`)

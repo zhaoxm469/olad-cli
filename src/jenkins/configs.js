@@ -12,5 +12,11 @@ export const JENKINS_REPO_PATH = {
 
 export const QA_PROJECT_REPO_YML_MAP = {
   "olading-hrsaas-hro-front":"olading-hro-front",
+  "sso-olading-front":"lanmaoly-cloud-sso-olading-front",
   "salary-front":"lanmaoly-cloud-salary-front"
 }
+
+export const QA_MAP_DEPLOY = {
+  "qa-sso-olading-front":"deploy-lanmaoly-cloud-sso-olading-front",
+}
+
