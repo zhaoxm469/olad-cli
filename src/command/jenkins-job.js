@@ -63,7 +63,7 @@ export async function jenkins(arg,options){
   const [error,jobItem] = await getCurrentJobItem(projectName,envName,jenkins)
   if(error) return console.log(error)
 
-  if(options.not !== "38" && envName==="to") await jenkins.buildJenkinsJob(jobItem.name)
+  if(options.not !== "38") await jenkins.buildJenkinsJob(jobItem.name)
 
   if(arg.length === 3 && envName=="to") multiEnvironmentBuild(jobItem,compileEnv)
 }

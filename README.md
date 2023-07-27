@@ -8,7 +8,8 @@ o j hro-front 156
 o j hro-front 38
 
 # 把hro-front 项目在38构建->deploy构建，并且修改 46环境配置文件
-o j hro-front to 46,104 
+o j hro-front to 46
+o j hro-front to 114
 
 # 把hro-front 项目在38构建->deploy构建，并且修改 46和104环境配置文件
 o j hro-front to 46,104 
