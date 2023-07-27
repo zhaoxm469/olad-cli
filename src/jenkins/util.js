@@ -28,7 +28,7 @@ class Jenkins {
       console.log('✅ Build triggered successfully!',`\n${BASE_URL}/job/${this.jobPath}/job/${jobName}\n`);
       return await this.pollBuildStatus(buildURL)
     } catch (error) {
-      console.error('Error:', error.message);
+      console.log('\n❌ Build failed!\n');
     }
   }
 
@@ -73,7 +73,7 @@ class Jenkins {
           } else if (result === 'SUCCESS') {
             console.clear()
             console.log('\n✅ Build succeeded!');
-            return Promise.resolve(logResponse.data);
+            return Promise.resolve(logResponse.data.slice(-100));
           } else {
             console.log('\n❌ Build failed!\n','\n  ',buildURL+"console","\n");
             return Promise.reject()
