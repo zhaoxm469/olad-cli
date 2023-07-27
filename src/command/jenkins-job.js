@@ -41,6 +41,7 @@ async function multiEnvironmentBuild(jobItem,compileEnv){
   const jenkins = createJenkins(deploy)
   let deployName = QA_MAP_DEPLOY[jobItem.name] ? QA_MAP_DEPLOY[jobItem.name] : jobItem.name.replace("qa-","deploy-")
   const consoleLog = await jenkins.buildJenkinsJob(deployName)
+  if(!consoleLog) return 
   const dockerImgVersion =  jenkins.getDockerImageVersion(consoleLog)
   if(!dockerImgVersion) return console.log("❌ deploying docker image failed")
   console.log(`\n✅ dockerImgVersion: ${dockerImgVersion}`)

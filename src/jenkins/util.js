@@ -29,6 +29,7 @@ class Jenkins {
       return await this.pollBuildStatus(buildURL)
     } catch (error) {
       console.log('\n❌ Build failed!\n');
+      return null
     }
   }
 
