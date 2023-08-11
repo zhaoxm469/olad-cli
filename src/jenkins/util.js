@@ -73,9 +73,9 @@ class Jenkins {
           } else if (result === 'SUCCESS') {
             console.clear()
             console.log('\n✅ Build succeeded!\n');
-            return Promise.resolve(logResponse.data.slice(-100));
+            return Promise.resolve(logResponse.data.slice(-500));
           } else {
-            console.log('\n❌ Build failed!\n','\n  ',buildURL+"console","\n");
+            console.log('\n❌ Build failed!\n');
             return Promise.reject()
           }
         } else {
