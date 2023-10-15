@@ -47,8 +47,10 @@ export async function modifyEnvRepoYmlConfig(
   // 替换docker版本号
   const newYmlContent = replaceImageName(ymlConfigContent, dockerImgVersion);
 
+  console.log("ymlFilePath:" + ymlConfigPath);
+
   if (newYmlContent === ymlConfigContent) {
-    console.log("❌ 注意！仓库yml 文件无修改", "ymlFilePath:" + ymlConfigPath);
+    console.log("❌ 注意！仓库yml 文件无修改");
   }
 
   // 写入文件
