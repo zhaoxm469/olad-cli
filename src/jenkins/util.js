@@ -95,9 +95,7 @@ export function createJenkins(jobPath){
   })
 }
 
-export function replaceDockerVersion (content,version){
-  // 使用正则表达式进行匹配和替换
-  const regex = /registry\.cn-beijing\.aliyuncs\.com\/zhicun\/olading-hro-front:hro-feature-1004244-eeae895a/g;
-  const replacedString = content.replace(regex, version);
-  return replacedString
+export function replaceImageName(content, newImageName) {
+  const regex = /image: registry\.cn-beijing\.aliyuncs\.com\/zhicun\/olading-marketing-admin-front:[\w-]+/;
+  return content.replace(regex, `image: ${newImageName}`);
 }
