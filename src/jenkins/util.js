@@ -1,5 +1,6 @@
 import { BASE_URL } from "./configs.js";
 import { post, get } from "./fetch.js";
+import { grayLog, greenLog, redLog } from "./log.js";
 
 class Jenkins {
   jobPath = "";
@@ -20,19 +21,24 @@ class Jenkins {
   }
 
   // 执行构建
-  async buildJenkinsJob(jobName) {
+  async triggerJenkinsBuild(jobName) {
+    const url = `/job/${this.jobPath}/job/${jobName}/build`
     try {
-      const response = await post(`/job/${this.jobPath}/job/${jobName}/build`);
+      const response = await post(url);
       const buildURL = response.headers["location"];
-      console.log(
-        "✅ Build triggered successfully!",
-        `\n${BASE_URL}/job/${this.jobPath}/job/${jobName}\n`
-      );
-      return await this.pollBuildStatus(buildURL);
-    } catch (error) {
-      return Promise.reject("\n❌ Build failed!\n");
+      return buildURL
+    }catch(err){
+      return redLog(`构建失败，请检查生成的urlPath：${url}`)
     }
   }
+
+  async build(jobName){
+    const buildURL = await this.triggerJenkinsBuild(jobName)
+    const jenkinsBuild = `\n${BASE_URL}/job/${this.jobPath}/job/${jobName}\n`
+    greenLog(`正在构建 ， jenkins 任务地址为：${jenkinsBuild}`)
+    return this.getBuildLog(buildURL)
+  }
+
 
   getDockerImageVersion(str) {
     const pattern = /镜像名称: (\S+)/;
@@ -45,18 +51,17 @@ class Jenkins {
   }
 
   // 轮询获取构建状态和日志
-  async pollBuildStatus(queueItemURL) {
+  async getBuildLog(buildURL) {
     try {
       while (true) {
-        const response = await get(queueItemURL + "/api/json");
+        const response = await get(buildURL + "/api/json");
 
         const queueItem = response.data;
-        const { executable, cancelled, result } = queueItem;
+        const { executable, cancelled, task ,result } = queueItem;
 
         // 检查构建状态和结果
         if (cancelled) {
-          console.log("Build was cancelled.");
-          break;
+          return Promise.resolve(["取消构建"],null)
         } else if (executable) {
           await new Promise((resolve) => setTimeout(resolve, 2000));
           const buildURL = executable.url;
@@ -66,19 +71,16 @@ class Jenkins {
           const logResponse = await get(buildURL + "/consoleText");
 
           const log = logResponse.data;
-          console.clear();
-          console.log("Build Log:", log);
+
+          console.log("\n Build Log:", log);
 
           // 检查构建结果
           if (building) {
             console.log("Build is still in progress...");
           } else if (result === "SUCCESS") {
-            console.clear();
-            console.log("\n✅ Build succeeded!\n");
-            return Promise.resolve(logResponse.data.slice(-500));
-          } else {
-            console.log("\n❌ Build failed!\n");
-            return Promise.reject();
+            return Promise.resolve([null,logResponse.data.slice(-500)]);
+          } else{
+            return Promise.resolve([`❌ Build failed! ${task.url}`,logResponse.data.slice(-500)]);
           }
         } else {
           console.log("Waiting for build to start...");
@@ -98,7 +100,7 @@ export function createJenkins(jobPath) {
 }
 
 export function replaceImageName(content, newImageLine) {
-  newImageLine = `          image: ${newImageLine}`;
+  newImageLine = `        image: ${newImageLine}`;
   const lines = content.split("\n");
   const updatedContent = [];
   let inImageBlock = false;

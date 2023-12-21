@@ -2,6 +2,7 @@ import fs from "fs";
 import { simpleGit } from "simple-git";
 import { replaceImageName } from "./util.js";
 import { PROJECT_PATH, QA_PROJECT_REPO_YML_MAP } from "./configs.js";
+import { yellowLog } from "./log.js";
 
 export async function modifyEnvRepoYmlConfig(
   projectName,
@@ -48,7 +49,7 @@ export async function modifyEnvRepoYmlConfig(
   const newYmlContent = replaceImageName(ymlConfigContent, dockerImgVersion);
 
   if (newYmlContent === ymlConfigContent) {
-    console.log("❌ 注意！仓库yml 文件无修改");
+    return ["注意！仓库.yml 文件无修改",null]
   }
 
   // 写入文件
@@ -63,5 +64,5 @@ export async function modifyEnvRepoYmlConfig(
   console.log(`git push 推送到远程`);
   await git.push(["-u", "origin", "master"]);
 
-  return "ok";
+  return [null]
 }

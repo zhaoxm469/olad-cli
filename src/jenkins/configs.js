@@ -16,7 +16,8 @@ export const QA_PROJECT_REPO_YML_MAP = {
   "salary-front":"lanmaoly-cloud-salary-front"
 }
 
-export const QA_MAP_DEPLOY = {
+export const deployNameMap = {
   "qa-sso-olading-front":"deploy-lanmaoly-cloud-sso-olading-front",
+  "qa-salary-front":"deploy-lanmaoly-cloud-salary-front"
 }
 
